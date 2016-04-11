@@ -1,0 +1,21 @@
+<html>
+<head>
+<script type="javascript" src="test.js"></script>
+</head>
+<body>
+  <div id="test" style="width:640px; height:480px">
+    <input id="btn" type="button" value="Test" />
+  </div>
+  <script>
+    var div = document.getElementById("test");
+    var btn = document.getElementById("btn");
+    btn.onclick = function() {      
+      step();
+    }
+
+	  function step() {
+      div.style.background = getRandomColor();
+    }
+  </script>
+</body>
+</html>
