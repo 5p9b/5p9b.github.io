@@ -1,21 +1,141 @@
+<!DOCTYPE html>
 <html>
 <head>
-<script src="test.js"></script>
+<script src="static/three.js"></script>
+<script src="static/three-canvasrenderer.js"></script>
+<script src="static/three-projector.js"></script>
+<script src="static/data.js"></script>
+		<style>
+			html * { margin: 0 !important; padding: 0 !important; border: 0 !important;}
+			#starmap {
+				width: 1024px;
+				height: 512px;
+			}
+		</style>
 </head>
-<body>
-  <div id="test" style="width:640px; height:480px">
-    <input id="btn" type="button" value="Test" />
-  </div>
-  <script>
-    var div = document.getElementById("test");
-    var btn = document.getElementById("btn");
-    btn.onclick = function() {      
-      step();
-    }
+  <body>
+  <div id="starmap"></div>
+<script>
+var WIDTH=2048; var HEIGHT=1024;
+var canvas = document.createElement("canvas");
+canvas.style.width=1000;
 
-    function step() {
-      div.style.background = getRandomColor();
-    }
-  </script>
-</body>
+var ctx = canvas.getContext("2d");
+var grad = ctx.createLinearGradient(0,0,0,HEIGHT);
+grad.addColorStop(0,'rgb(31, 179, 227)');
+grad.addColorStop(1,'rgb(25, 25, 25)');
+
+var scale = 10.0; // world units = light years * scale
+
+var container = document.getElementById("starmap");
+
+var scene = new THREE.Scene();
+var group = new THREE.Group();
+scene.add(group);
+scene.fog = new THREE.FogExp2(0x1f1f1f, 0.0008);
+var camera = new THREE.PerspectiveCamera(45, WIDTH/HEIGHT, 0.1, 10000);
+
+var renderer = new THREE.CanvasRenderer({canvas : canvas});
+renderer.setClearColor(0x1f1f1f, 0);
+renderer.setSize(WIDTH,HEIGHT);
+renderer.autoClear = false;
+
+var discGreen = new THREE.TextureLoader().load("static/disc-green.png");
+var discRed = new THREE.TextureLoader().load("static/disc-red.png");
+var discOrange = new THREE.TextureLoader().load("static/disc-orange.png");
+var discWhite = new THREE.TextureLoader().load("static/disc-white.png");
+
+var sunMaterial = new THREE.SpriteMaterial( { map: discGreen, color: 0x33ff00 } );
+var nextStarMaterial = new THREE.SpriteMaterial( { map: discRed, color: 0xff0000 } );
+var reachedStarMaterial = new THREE.SpriteMaterial( { map: discOrange, color: 0xffcc00 } );
+var unreachedStarMaterial = new THREE.SpriteMaterial( { map: discWhite, color: 0xffffff } );
+
+var line_material = new THREE.LineBasicMaterial({
+  color: 0x1f1f1f,
+  linewidth: 2,
+  fog: true,
+  opacity: 0.3,
+  transparent: true
+});
+
+for ( var i = 0; i < stars.length; i++ ) {
+  
+  var spriteMaterial = unreachedStarMaterial;
+  if (stars[i].hyg_id === '0') {
+    /* the sun */
+    spriteMaterial = sunMaterial;
+  }
+  else if (stars[i].hyg_id === next_star) {
+    spriteMaterial = nextStarMaterial;
+  }
+  else if (reached.indexOf(stars[i].hyg_id) != -1) {
+    spriteMaterial = reachedStarMaterial;
+  }
+  
+  // Draw a line
+  var line_geometry = new THREE.Geometry();
+  line_geometry.vertices.push(
+    new THREE.Vector3(
+      stars[i].x * scale,
+      stars[i].y * scale,
+      stars[i].z * scale
+    )
+  );
+  line_geometry.vertices.push(
+    new THREE.Vector3(
+      stars[i].x * scale,
+      0.0,
+      stars[i].z * scale
+    )
+  );
+  line_geometry.vertices.push(
+    new THREE.Vector3(
+      0.0,
+      0.0,
+      0.0
+    )
+  );
+  var line = new THREE.Line(line_geometry, line_material);
+  group.add(line);
+
+  var sprite = new THREE.Sprite(spriteMaterial);
+  sprite.scale.set(scale*0.8,scale*0.8,1);
+  sprite.position.set(stars[i].x*scale,stars[i].y*scale,stars[i].z*scale);
+  group.add(sprite);
+}
+
+camera.position.z = 800;
+camera.position.y = 50;
+camera.lookAt(scene.position);
+
+var frames = 0;
+var totalFrames = 120;
+
+function render() {
+  ++frames;
+  requestAnimationFrame(render);
+  group.rotation.y += 0.005;
+  renderer.render(scene, camera);
+}
+
+function step() {
+  group.rotation.y += 2*Math.PI/totalFrames;
+
+  ctx.fillStyle = grad;
+  ctx.globalAlpha = 1.0;
+  ctx.fillRect(0,0,WIDTH,HEIGHT);
+
+  renderer.render(scene, camera);
+  
+  while (container.hasChildNodes()) {
+    container.removeChild(container.lastChild);
+  }
+  var imgOut = document.createElement("img");
+  imgOut.src = canvas.toDataURL();
+  imgOut.width = container.offsetWidth;
+  imgOut.height = container.offsetHeight;
+  container.appendChild(imgOut);
+}
+</script>
+  </body>
 </html>
