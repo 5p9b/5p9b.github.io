@@ -67,7 +67,7 @@ function imageWithColorURL(image, cssColor) {
 
 var unreachedStarMaterial, nextStarMaterial, reachedStarMaterial, sunMaterial;
 var loader = new THREE.TextureLoader();
-loader.load("static/disc-white.png", function(disc) {
+loader.load("static/disc.png", function(disc) {
 
   sunMaterial = new THREE.SpriteMaterial( { map: 
     loader.load(imageWithColorURL(disc.image, "#33ff00")) });
