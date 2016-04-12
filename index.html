@@ -40,37 +40,15 @@ renderer.setClearColor(0x1f1f1f, 0);
 renderer.setSize(WIDTH,HEIGHT);
 renderer.autoClear = false;
 
-function imageWithColorURL(image, cssColor) {
-  var scratch = document.createElement("canvas");
-  scratch.width = image.width;
-  scratch.height = image.height;
-  scratchCtx = scratch.getContext("2d");
+var discGreen = new THREE.TextureLoader().load("static/disc-green.png");
+var discRed = new THREE.TextureLoader().load("static/disc-red.png");
+var discOrange = new THREE.TextureLoader().load("static/disc-orange.png");
+var discWhite = new THREE.TextureLoader().load("static/disc-white.png");
 
-  scratchCtx.drawImage(image, 0, 0);
-  scratchCtx.globalCompositeOperation = "source-in";
-  scratchCtx.fillStyle = cssColor;
-  scratchCtx.fillRect(0, 0, scratch.width, scratch.height);
-  scratchCtx.globalCompositeOperation = "multiply";
-  scratchCtx.drawImage(image,0,0);
-
-  return scratch.toDataURL();
-}
-
-var unreachedStarMaterial, nextStarMaterial, reachedStarMaterial, sunMaterial;
-var loader = new THREE.TextureLoader();
-loader.load("static/disc-white.png", function(discWhite) {
-  unreachedStarMaterial = new THREE.SpriteMaterial( { map: discWhite } );
-  
-  loader.load(imageWithColorURL(discWhite.image, "#ff0000"), function(discRed) {
-    nextStarMaterial = new THREE.SpriteMaterial( { map: discRed } );	
-  });
-  loader.load(imageWithColorURL(discWhite.image, "#ffcc00"), function(discOrange) {
-    reachedStarMaterial = new THREE.SpriteMaterial( { map: discOrange } );	
-  });
-  loader.load(imageWithColorURL(discWhite.image, "#33ff00"), function(discGreen) {
-    sunMaterial = new THREE.SpriteMaterial( { map: discGreen } );	
-  });	
-});
+var sunMaterial = new THREE.SpriteMaterial( { map: discGreen, color: 0x33ff00 } );
+var nextStarMaterial = new THREE.SpriteMaterial( { map: discRed, color: 0xff0000 } );
+var reachedStarMaterial = new THREE.SpriteMaterial( { map: discOrange, color: 0xffcc00 } );
+var unreachedStarMaterial = new THREE.SpriteMaterial( { map: discWhite, color: 0xffffff } );
 
 var line_material = new THREE.LineBasicMaterial({
   color: 0x1f1f1f,
