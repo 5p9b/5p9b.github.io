@@ -130,8 +130,15 @@ function step() {
   while (container.hasChildNodes()) {
     container.removeChild(container.lastChild);
   }
+  
+  var canvasOut = document.createElement("canvas");
+  canvasOut.width = container.offsetWidth;
+  canvasOut.height = container.offsetHeight;
+  var ctxOut = canvasOut.getContext("2d");
+  ctxOut.drawImage(canvas, 0, 0, canvasOut.width, canvasOut.height);
+  
   var imgOut = document.createElement("img");
-  imgOut.src = canvas.toDataURL();
+  imgOut.src = canvasOut.toDataURL();
   imgOut.width = container.offsetWidth;
   imgOut.height = container.offsetHeight;
   container.appendChild(imgOut);
