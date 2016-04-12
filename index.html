@@ -61,13 +61,13 @@ var loader = new THREE.TextureLoader();
 loader.load("static/disc-white.png", function(discWhite) {
   unreachedStarMaterial = new THREE.SpriteMaterial( { map: discWhite } );
   
-  loader.load(imageWithColorURL(texture.image, "#ff0000"), function(discRed) {
+  loader.load(imageWithColorURL(discWhite.image, "#ff0000"), function(discRed) {
     nextStarMaterial = new THREE.SpriteMaterial( { map: discRed } );	
   });
-  loader.load(imageWithColorURL(texture.image, "#ffcc00"), function(discOrange) {
+  loader.load(imageWithColorURL(discWhite.image, "#ffcc00"), function(discOrange) {
     reachedStarMaterial = new THREE.SpriteMaterial( { map: discOrange } );	
   });
-  loader.load(imageWithColorURL(texture.image, "#33ff00"), function(discGreen) {
+  loader.load(imageWithColorURL(discWhite.image, "#33ff00"), function(discGreen) {
     sunMaterial = new THREE.SpriteMaterial( { map: discGreen } );	
   });	
 });
