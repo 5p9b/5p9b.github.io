@@ -56,10 +56,14 @@ function imageWithColorURL(image, cssColor) {
   return scratch.toDataURL();
 }
 
-var discWhite = new THREE.TextureLoader().load("static/disc-white.png");
-var discRed = new THREE.TextureLoader().load(imageWithColorURL(discWhite.image, "#ff0000"));
-var discOrange = new THREE.TextureLoader().load(imageWithColorURL(discWhite.image, "#ffcc00"));
-var discGreen = new THREE.TextureLoader().load(imageWithColorURL(discWhite.image, "#33ff00"));
+var discWhite, discRed, discOrange, discGreen;
+var loader = new THREE.TextureLoader();
+loader.load("static/disc-white.png", function(texture) {
+  discWhite = texture;
+  discRed = loader.load(imageWithColorURL(texture.image, "#ff0000"));
+  discOrange = loader.load(imageWithColorURL(texture.image, "#ffcc00"));
+  discGreen = loader.load(imageWithColorURL(texture.image, "#33ff00"));	
+});
 
 var unreachedStarMaterial = new THREE.SpriteMaterial( { map: discWhite } );
 var nextStarMaterial = new THREE.SpriteMaterial( { map: discRed } );
