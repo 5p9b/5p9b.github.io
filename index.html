@@ -56,19 +56,21 @@ function imageWithColorURL(image, cssColor) {
   return scratch.toDataURL();
 }
 
-var discWhite, discRed, discOrange, discGreen;
+var unreachedStarMaterial, nextStarMaterial, reachedStarMaterial, sunMaterial;
 var loader = new THREE.TextureLoader();
-loader.load("static/disc-white.png", function(texture) {
-  discWhite = texture;
-  discRed = loader.load(imageWithColorURL(texture.image, "#ff0000"));
-  discOrange = loader.load(imageWithColorURL(texture.image, "#ffcc00"));
-  discGreen = loader.load(imageWithColorURL(texture.image, "#33ff00"));	
+loader.load("static/disc-white.png", function(discWhite) {
+  unreachedStarMaterial = new THREE.SpriteMaterial( { map: discWhite } );
+  
+  loader.load(imageWithColorURL(texture.image, "#ff0000"), function(discRed) {
+    nextStarMaterial = new THREE.SpriteMaterial( { map: discRed } );	
+  });
+  loader.load(imageWithColorURL(texture.image, "#ffcc00"), function(discOrange) {
+    reachedStarMaterial = new THREE.SpriteMaterial( { map: discOrange } );	
+  });
+  loader.load(imageWithColorURL(texture.image, "#33ff00"), function(discGreen) {
+    sunMaterial = new THREE.SpriteMaterial( { map: discGreen } );	
+  });	
 });
-
-var unreachedStarMaterial = new THREE.SpriteMaterial( { map: discWhite } );
-var nextStarMaterial = new THREE.SpriteMaterial( { map: discRed } );
-var reachedStarMaterial = new THREE.SpriteMaterial( { map: discOrange } );
-var sunMaterial = new THREE.SpriteMaterial( { map: discGreen } );
 
 var line_material = new THREE.LineBasicMaterial({
   color: 0x1f1f1f,
